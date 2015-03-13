@@ -17,7 +17,7 @@ int main(int, char**)
     namedWindow("original",1);
     imshow("original",original_g);
     Mat foreground;
-    namedWindow("edges",1);
+    namedWindow("foreground",1);
     for(;;)
     {
         Mat frame;
@@ -25,12 +25,14 @@ int main(int, char**)
         cvtColor(frame, foreground, CV_BGR2GRAY);
 	for(int i = 0; i < foreground.rows; i++){
 	  for(int j = 0; j < foreground.cols; j++){
-	    if( abs(foreground.at<uchar>(i,j) - original_g.at<uchar>(i,j)) < 25){
+	    //simple difference between the current frame and the bg
+	    if( abs(foreground.at<uchar>(i,j) - original_g.at<uchar>(i,j)) < 35){
 	      foreground.at<uchar>(i,j) = 255;}
 	  }
 	}
-	     
-	      
+	
+	//Noise reduction with median filter
+	medianBlur(foreground, foreground, 3);     
 	imshow("foreground", foreground);
 	if(waitKey(30) >= 0) break;
     }

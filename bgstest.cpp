@@ -1,7 +1,11 @@
 #include "opencv2/opencv.hpp"
 #define INPUT_VIDEO "mh.mpg"
 using namespace cv;
-
+// Usage
+// download build.sh
+// in a terminal : sh build.sh
+// then the executable file is created and
+// ./binary
 int main(int, char**)
 {
    VideoCapture cap(INPUT_VIDEO); 

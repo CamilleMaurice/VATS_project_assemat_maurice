@@ -1,6 +1,7 @@
 #include "opencv2/opencv.hpp"
 #include <opencv2/core/core.hpp> 
-#include <iostream> 
+#include <iostream>
+#include <vector> 
 #define INPUT_VIDEO "mh.mpg"
 using namespace cv;
 // Usage
@@ -14,17 +15,18 @@ int main(int, char**)
     if(!cap.isOpened())  // check if we succeeded
         return -1;
 
-    
+    //Create a list to store n gaussian matrices
+    std::vector<cv::Mat> listOfMatrices;
+
     Mat original;
     Mat original_g;
-    cap >> original ;
+    cap >> original;
     
-    //2 channel floating point matrix to store for each pixel a mean and a variance
+    
+    //2 channels floating point matrix to store for each pixel a mean and a variance
     Mat gaussian( original.rows, original.cols, CV_32FC2 );
 
-    //Create a n values array to store n gaussian matrices
-    //
-
+    
     cvtColor( original, original_g, CV_BGR2GRAY );
     //display the bg model
     //namedWindow("original",1);
@@ -35,10 +37,16 @@ int main(int, char**)
     for(;;)
       {
         Mat frame;
-	//For running average, we should associate to each pixel one
-	//variance and one mean
         cap >> frame; // get a new frame from camera
-        cvtColor(frame, foreground, CV_BGR2GRAY);
+        
+	
+	//Gaussian model for each pixel (= one mean, one std)
+	//
+	//
+
+	//listOfMatrices.push_back(gaussian);
+
+	cvtColor(frame, foreground, CV_BGR2GRAY);
 	namedWindow("frame",1);
 	imshow("frame",frame);
 	for(int i = 0; i < foreground.rows; i++){

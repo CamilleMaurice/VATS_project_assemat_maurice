@@ -37,6 +37,7 @@ int main(int, char**)
     for(;;)
       {
         Mat frame;
+	//Mat test;
         cap >> frame; // get a new frame from camera
         
 	
@@ -50,18 +51,21 @@ int main(int, char**)
 	namedWindow("frame",1);
 	imshow("frame",frame);
 	for(int i = 0; i < foreground.rows; i++){
-	 for(int j = 0; j < foreground.cols; j++){
+	  for(int j = 0; j < foreground.cols; j++){
+	   
 	    //simple difference between the current frame and the bg
-	   if( abs(foreground.at<uchar>(i,j) - original_g.at<uchar>(i,j)) < 35){
-		      foreground.at<uchar>(i,j) = 255;}
-	 }
+	    if( abs(foreground.at<uchar>(i,j) - original_g.at<uchar>(i,j)) < 35){
+	      foreground.at<uchar>(i,j) = 255;}
+	  }
 	}
 	
+	//test = abs(original_g - foreground);
+
 	//Noise reduction with median filter
 	medianBlur(foreground, foreground, 3);     
 	imshow("foreground", foreground);
 	if(waitKey(30) >= 0) break;
-    }
+      }
     // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;
 }

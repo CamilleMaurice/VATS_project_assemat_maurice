@@ -18,7 +18,9 @@ int main(int, char**)
 
   Mat original;
   Mat background;
+  Mat foreground;
 
+  double alpha = 0.05; //for selective running average
   cap >> original;
   
 
@@ -27,8 +29,6 @@ int main(int, char**)
   //namedWindow("original",1);
   //imshow("original", background);
  
-  Mat foreground;
-  namedWindow("foreground",1);
   
   for(;;)
     {
@@ -44,14 +44,18 @@ int main(int, char**)
 	for(int j = 0; j < foreground.cols; j++){
 	  
 	  //simple difference between the current frame and the bg
-	  if( abs(foreground.at<uchar>(i,j) - background.at<uchar>(i,j)) < 35){
-	    foreground.at<uchar>(i,j) = 255;}
+	  if( abs(foreground.at<uchar>(i,j) - background.at<uchar>(i,j)) < 35){ //pixel is characterized as BG
+	    foreground.at<uchar>(i,j) = 255;
+	  }else{ //pixel is characterized as FG
+	    foreground.at<uchar>(i,j) = 0;}
 	
 	}
       }
 
       //Noise reduction with median filter
       medianBlur(foreground, foreground, 3);
+      
+      namedWindow("foreground",1);
       imshow("foreground", foreground);
 
       if(waitKey(30) >= 0) break;

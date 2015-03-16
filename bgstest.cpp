@@ -2,8 +2,13 @@
 #include <opencv2/core/core.hpp>
 #include <iostream>
 #include <vector>
-#define INPUT_VIDEO "mh.mpg"
+
+//#define INPUT_VIDEO "mh.mpg"
+#define INPUT_VIDEO "pets2001_camera1_2.mpg"
+
 using namespace cv;
+
+
 // Usage
 // download build.sh
 // in a terminal : sh build.sh
@@ -16,18 +21,19 @@ int main(int, char**)
   if(!cap.isOpened()) // check if we succeeded
     return -1;
 
-  Mat original;
-  Mat background;
+  Mat first_frame;
+  Mat background_model;
   Mat foreground;
 
-  double alpha = 0.05; //for selective running average
-  cap >> original;
+  double alpha = 0.07; //for selective running average
+  cap >> first_frame;
   
 
-  cvtColor( original, background, CV_BGR2GRAY );
+  cvtColor( first_frame, background_model, CV_BGR2GRAY );
+  cvtColor( first_frame, first_frame, CV_BGR2GRAY );
   //display the bg model
-  //namedWindow("original",1);
-  //imshow("original", background);
+  //namedWindow("first_frame",1);
+  //imshow("first_frame", background_model);
  
   
   for(;;)
@@ -35,8 +41,8 @@ int main(int, char**)
       Mat frame;
       
       cap >> frame; // get a new frame from camera
-      cvtColor(frame, foreground, CV_BGR2GRAY);
-      
+      cvtColor(frame, foreground, CV_BGR2GRAY); 
+      cvtColor(frame, frame, CV_BGR2GRAY);
       namedWindow("frame",1);
       imshow("frame",frame);
       
@@ -44,19 +50,27 @@ int main(int, char**)
 	for(int j = 0; j < foreground.cols; j++){
 	  
 	  //simple difference between the current frame and the bg
-	  if( abs(foreground.at<uchar>(i,j) - background.at<uchar>(i,j)) < 35){ //pixel is characterized as BG
+	  if( abs(frame.at<uchar>(i,j) - background_model.at<uchar>(i,j)) < 45){ //pixel is characterized as BG
 	    foreground.at<uchar>(i,j) = 255;
+	    
+//background_model.at<uchar>(i,j) = alpha * frame.at<uchar>(i,j) + (1-alpha) * background_model.at<uchar>(i,j);
 	  }else{ //pixel is characterized as FG
-	    foreground.at<uchar>(i,j) = 0;}
-	
+            foreground.at<uchar>(i,j) = 0;
+            background_model.at<uchar>(i,j) = alpha * frame.at<uchar>(i,j) + (1-alpha) * background_model.at<uchar>(i,j);
+	  }
+	  
 	}
       }
 
       //Noise reduction with median filter
-      medianBlur(foreground, foreground, 3);
+      //medianBlur(foreground, foreground, 3);
       
       namedWindow("foreground",1);
       imshow("foreground", foreground);
+
+      namedWindow("background_model",1);
+      imshow("background_model", background_model);
+
 
       if(waitKey(30) >= 0) break;
    

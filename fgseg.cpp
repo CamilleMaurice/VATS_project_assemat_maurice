@@ -2,6 +2,8 @@
 #include <opencv2/core/core.hpp>
 #include <iostream>
 #include <vector>
+#include "fgseg.hpp"
+
 using namespace cv;
 using namespace std;
 

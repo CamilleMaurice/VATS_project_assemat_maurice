@@ -18,6 +18,14 @@ int main(int, char**){
   if(!cap.isOpened()) // check if we succeeded
     return -1;
 
+  //test write
+
+cv::VideoWriter output_cap(argv[2], 
+               cap.get(CV_CAP_PROP_FOURCC),
+               cap.get(CV_CAP_PROP_FPS),
+               cv::Size(cap.get(CV_CAP_PROP_FRAME_WIDTH),
+               cap.get(CV_CAP_PROP_FRAME_HEIGHT)));
+
   Mat first_frame;
   Mat background_model;
   Mat previous_frame;
@@ -100,7 +108,7 @@ int main(int, char**){
 
       previous_frame = frame;
       previous_background = background_model;
-
+      output_cap.write(foreground);
       if(waitKey(30) >= 0) break;
    
     }

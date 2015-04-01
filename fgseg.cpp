@@ -1,12 +1,36 @@
-#include "fgseg.h"
+#include "opencv2/opencv.hpp"
+#include <opencv2/core/core.hpp>
+#include <iostream>
+#include <vector>
+using namespace cv;
+using namespace std;
 
 
 
-int uu_display(string im){
-    Mat image;
-    image = imread(im);
-    namedWindow("Display Image", WINDOW_AUTOSIZE );
-    imshow("Display Image", image);
+char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
+	
+	
+	
+	
+}
 
-    waitKey(0);
-    }
+
+void VATS_Foreground_Segmentation_Stop( tForegroundSegmentationVATS * desc){
+	
+	
+}
+
+char VATS_Foreground_Segmentation ( tForegroundSegmentationVATS * desc, Mat input, char shadows, Mat mask){
+	for(int i = 0; i < desc->H; i++){
+		for(int j = 0; j < desc->W; j++){
+			if( abs(input.at<uchar>(i,j) - background_model.at<uchar>(i,j)) < desc->thres){
+				mask.at<uchar>(i,j) = 0;			
+			}else{
+				mask.at<uchar>(i,j) = 1;
+			}
+		}
+	}
+}
+
+
+ 

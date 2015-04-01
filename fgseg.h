@@ -6,6 +6,8 @@
 using namespace cv;
 using namespace std;
 
-
-int uu_display(string h);
+struct tForegroundSegmentationVATS {
+  Mat first_frame;
+  Mat background_model;
+};
 

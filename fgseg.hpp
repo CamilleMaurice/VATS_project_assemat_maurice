@@ -18,6 +18,8 @@ struct tForegroundSegmentationVATS {
   int H;
   int W;
   int thres;
+  
+  //Should we add the color mode ?
 };
 
 char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc);

@@ -15,15 +15,16 @@ struct tForegroundSegmentationVATS {
   char* video;
   cv::Mat first_frame;
   cv::Mat bg_model;
+  cv::Mat hot_restart;
   int H;
   int W;
   int thres;
   int alpha;
+  int block_size;
   int shadows;
 };
 
 char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc);
-char VATS_Foreground_Segmentation_BG_model( tForegroundSegmentationVATS * desc, VideoCapture cap);
 void VATS_Foreground_Segmentation_Stop( tForegroundSegmentationVATS * desc);
 char VATS_Foreground_Segmentation ( tForegroundSegmentationVATS * desc, Mat input, char shadows, Mat mask);
 

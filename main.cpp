@@ -15,13 +15,16 @@ int main(int argc, char** argv){
 	tForegroundSegmentationVATS * desc = new tForegroundSegmentationVATS;
 	
 	//Initializing descriptor with wanted parameters
-	desc->cpt_hot_restart = 3;
+	desc->cpt_hot_restart = 90;
 	desc->video = argv[1];
 	desc->shadows = 0;
-	desc->thres = 75;
+	desc->thres = 50;
 	desc->alpha = 0.1;
+	desc->block_size = 1;
+	
 	
 	VATS_Foreground_Segmentation_Start(desc);
 	VATS_Foreground_Segmentation_Stop(desc);
+	
 	return EXIT_SUCCESS;
 }

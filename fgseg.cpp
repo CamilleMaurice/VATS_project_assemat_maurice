@@ -34,11 +34,11 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 		
 		
 	//Writing output
-	//~ char filename[80];
+	 char filename[80];
 	//~ char full_path[80];
 	//~ strcpy( full_path, My_PATH );
 	//~ strcat( full_path, "outmask_%d.png" );
-	//~ int idx = 0;
+	 int idx = 0;
     //~ sprintf(filename,full_path,idx);
 	
 	
@@ -54,11 +54,11 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 	
 	
 		//Display      
-		 namedWindow("frame",1);
-         imshow("frame",frame);
+		 //namedWindow("frame",1);
+         //imshow("frame",frame);
       
-         namedWindow("mask",1);
-         imshow("mask",mask*255);	
+         //namedWindow("mask",1);
+         //imshow("mask",mask*255);	
 	
 		 //~ namedWindow("bg_model",1);
 		 //~ imshow("hrt_mask", desc->hot_restart);	

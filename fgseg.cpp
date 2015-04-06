@@ -10,7 +10,7 @@ int going_on;
 using namespace cv;
 using namespace std;
 
-char* My_PATH = "/home/miyu/Musique/VATS_project_assemat_maurice/OUTSEQ/";
+//~ char* My_PATH = "/home/miyu/Musique/VATS_project_assemat_maurice/OUTSEQ/";
 
 char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 	
@@ -34,12 +34,12 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 		
 		
 	//Writing output
-	char filename[80];
-	char full_path[80];
-	strcpy( full_path, My_PATH );
-	strcat( full_path, "outmask_%d.png" );
-	int idx = 0;
-    sprintf(filename,full_path,idx);
+	//~ char filename[80];
+	//~ char full_path[80];
+	//~ strcpy( full_path, My_PATH );
+	//~ strcat( full_path, "outmask_%d.png" );
+	//~ int idx = 0;
+    //~ sprintf(filename,full_path,idx);
 	
 	
 			
@@ -63,11 +63,11 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 		 //~ namedWindow("bg_model",1);
 		 //~ imshow("hrt_mask", desc->hot_restart);	
 		 //~ 
-		 //~ namedWindow("bg_ht",1);
-		 //~ imshow("bg_ml", desc->bg_model);	
+		 namedWindow("bg_ht",1);
+		 imshow("bg_ml", desc->bg_model);	
 		
 		//Write Output	
-		imwrite(filename, mask*255);
+		imwrite(filename, desc->bg_model);
      	idx++;
 		sprintf(filename,"/home/miyu/Musique/VATS_project_assemat_maurice/OUTSEQ/test_%d.png",idx);
 	}

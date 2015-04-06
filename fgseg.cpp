@@ -6,17 +6,18 @@
 
 
 int going_on;
-  
+
 using namespace cv;
 using namespace std;
 
+char* My_PATH = "/home/miyu/Musique/VATS_project_assemat_maurice/OUTSEQ/";
+
 char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
-	going_on = 1;
-	Mat frame, mask;
-   
-    Mat counter_hot_restart; 
 	
-	VideoCapture cap(desc->video);
+	going_on = 1;
+	Mat frame, mask, counter_hot_restart;
+  
+    VideoCapture cap(desc->video);
 	if(!cap.isOpened()) // check if we succeeded
 		return -1;
 
@@ -30,6 +31,17 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 	counter_hot_restart = Mat::zeros(desc->H, desc->W, CV_8U);
 
 	desc->hot_restart = counter_hot_restart;
+		
+		
+	//Writing output
+	char filename[80];
+	char full_path[80];
+	strcpy( full_path, My_PATH );
+	strcat( full_path, "outmask_%d.png" );
+	int idx = 0;
+    sprintf(filename,full_path,idx);
+	
+	
 			
 	//VATS_Foreground_Segmentation_BG_model(desc,cap);		 
 	while(going_on==1){
@@ -42,14 +54,22 @@ char VATS_Foreground_Segmentation_Start( tForegroundSegmentationVATS * desc){
 	
 	
 		//Display      
-		namedWindow("frame",1);
-        imshow("frame",frame);
+		 namedWindow("frame",1);
+         imshow("frame",frame);
       
-        namedWindow("mask",1);
-        imshow("mask",mask*255);	
+         namedWindow("mask",1);
+         imshow("mask",mask*255);	
 	
-		namedWindow("bg_model",1);
-		imshow("bg_model", desc->hot_restart);	
+		 //~ namedWindow("bg_model",1);
+		 //~ imshow("hrt_mask", desc->hot_restart);	
+		 //~ 
+		 //~ namedWindow("bg_ht",1);
+		 //~ imshow("bg_ml", desc->bg_model);	
+		
+		//Write Output	
+		imwrite(filename, mask*255);
+     	idx++;
+		sprintf(filename,"/home/miyu/Musique/VATS_project_assemat_maurice/OUTSEQ/test_%d.png",idx);
 	}
 		
 	return 0;
@@ -98,11 +118,13 @@ char VATS_Foreground_Segmentation (tForegroundSegmentationVATS * desc, Mat input
 			int cpt = 0;
 			for (int c =0;c<3;c++){
 				sumI = 0;
-				sumBG = 0;				
+				sumBG = 0;
+				int diff = 0;				
 				//If we want to process at pixel level
 				if (block_size == 1){
 					sumI = channels_input[c].at<uchar>(x,y);
 					sumBG = channels_bg[c].at<uchar>(x,y);
+					diff = abs (sumI - sumBG);
 				}
 				//We want to process at block level (usually 3 or 5)
 				else{
@@ -110,6 +132,7 @@ char VATS_Foreground_Segmentation (tForegroundSegmentationVATS * desc, Mat input
 						for (int j = -floor(block_size/2); j < floor(block_size/2); j ++){
 							sumI = sumI + channels_input[c].at<uchar>(x+i,y+j);
 							sumBG = sumBG + channels_bg[c].at<uchar>(x+i,y+j);
+							//diff = diff + abs(sumI-sumBG);
 						}
 					}
 				}				
@@ -117,20 +140,25 @@ char VATS_Foreground_Segmentation (tForegroundSegmentationVATS * desc, Mat input
 					cpt = cpt +1;					
 				}
 			}
-			//If the pixel color is below the threashold for all the 3 channels, then we set it as background.
-			if(cpt > 0) { 
+			//If the pixel color is below the threshold for all the 3 channels, then we set it as background.
+			if(cpt == 3) { 
 					FG_mask.at<uchar>(x,y) = 0;
+					
 					//Pixel is locked and remains locked
-					if(desc->hot_restart.at<uchar>(x,y) == 255){
-						desc->hot_restart.at<uchar>(x,y) = 255;
-					}else{
+					//if(desc->hot_restart.at<uchar>(x,y) == 255){
+					//	desc->hot_restart.at<uchar>(x,y) = 255;
+					//}else{
 						desc->hot_restart.at<uchar>(x,y) = desc->hot_restart.at<uchar>(x,y) +1;
-						desc->bg_model.at<Vec3b>(x,y)=desc->alpha*input.at<Vec3b>(x,y)+(1-desc->alpha)*desc->bg_model.at<Vec3b>(x,y);
-					}	
+						//desc->bg_model.at<Vec3b>(x,y)=desc->alpha*input.at<Vec3b>(x,y)+(1-desc->alpha)*desc->bg_model.at<Vec3b>(x,y);
+					//}	
 			//Foreground case
 			}else{
 					FG_mask.at<uchar>(x,y) = 1;
-					desc->hot_restart.at<uchar>(x,y) = 0;					
+					//IF IT IS NOT LOCKED WE REFRESH
+					if(desc->hot_restart.at<uchar>(x,y)<desc->cpt_hot_restart){
+						desc->hot_restart.at<uchar>(x,y) = 0;
+					}
+																				
 			}			
 			
 			//Background is refreshed until the pixel is locked
